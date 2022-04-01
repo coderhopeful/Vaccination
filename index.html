@@ -18,7 +18,7 @@
             <div class="col-4"></div>
             <div class="col-4">
                 <h3 class="text-success ms-5"><b>COWIN Open Slots</b></h3>
-                <select name="states" id="states" class="mt-2 w-75" onchange="populateDistrict()">
+                <select name="states" id="states" class="mt-2 w-50" onchange="populateDistrict()">
                     <option value="">Select your State</option>
                 </select>
                 <select name="district" id="district" class="mt-3 w-50">
@@ -26,15 +26,16 @@
                 </select>
                 <input type="text" name="date" id="date" class="mt-3 ms-1 rounded-3"
                     placeholder="Enter date in dd-mm-yyyy">
-                    <button type="button" class="btn btn-success d-block mt-2 btn-sm ms-1" onclick="populateSlots()">Submit</button>
+                <button type="button" class="btn btn-success d-block mt-2 btn-sm ms-1"
+                    onclick="populateSlots()">Submit</button>
 
             </div>
             <div class="col-4"></div>
         </div>
         <div class="row">
             <div class="col-2"></div>
-            <div class="col-8">
-                <table class="table mt-5">
+            <div class="col-lg-8 col-sm-12">
+                <table class="table mt-5 ">
                     <tr>
                         <th>Center ID</th>
                         <th>Name</th>
@@ -58,16 +59,16 @@
 
 <script>
     var selected = document.querySelector("#states")
-    var state_data = []
-    var district_data = []
+    
+    
     fetch("https://cdn-api.co-vin.in/api/v2/admin/location/states").
         then(res => res.json()).
         then(data => {
             data.states.forEach(st => {
-                state_data.push(st)
+               
                 let option = document.createElement('option')
                 option.text = st.state_name
-                option.value = st.state_name
+                option.value = st.state_id
                 selected.appendChild(option);
             });
         })
@@ -76,18 +77,19 @@
 
 
     function populateDistrict() {
+        let stateId = states.value
         var selected_dt = document.querySelector("#district")
 
-        let stateId = state_data.find(p => p.state_name == selected.value).state_id
+
 
         fetch(`https://cdn-api.co-vin.in/api/v2/admin/location/districts/${stateId}`).
             then(res => res.json()).
             then(data => {
                 data.districts.forEach(dt => {
-                    district_data.push(dt)
+                
                     let option = document.createElement('option')
                     option.text = dt.district_name
-                    option.value = dt.district_name
+                    option.value = dt.district_id
                     option.id = dt.distict_id
                     selected_dt.appendChild(option);
 
@@ -97,7 +99,7 @@
     }
 
     function populateSlots() {
-        let distId = district_data.find(d => d.district_name == district.value).district_id
+        let distId = district.value
         var html_data = ``
 
         let appdate = date.value
